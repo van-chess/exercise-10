@@ -2,7 +2,7 @@ import random
 import time
 
 def sort(l):
-    if len(l) == 1: # base case
+    if len(l) <= 1: # base case
         return l
     else: # recursion
         r = []
@@ -16,9 +16,9 @@ def sort(l):
                 r.append(p2.pop(0))
             else:
                 r.append(p1.pop(0))
-        if len(p1) > 0:
+        while len(p1) > 0:
             r.append(p1.pop(0))
-        if len(p2) > 0:
+        while len(p2) > 0:
             r.append(p2.pop(0))
         return r
 
