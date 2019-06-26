@@ -28,7 +28,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(sort([7, 4, 1,5,2,9]), [1,2,4,5,7,9])
         sortRunning = False
         t.join()
-        self.assertGreater(maxNumberOfThreads, 1)
+        self.assertGreater(maxNumberOfThreads, 2)
     
 
 if __name__ == '__main__':
