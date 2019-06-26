@@ -9,8 +9,8 @@ def sort(l):
         splitPoint = round(len(l)/2)
         
         # parallelize calls to sort() here
-        p1 = l[0:splitPoint]
-        p2 = l[splitPoint:]
+        p1 = sort(l[0:splitPoint])
+        p2 = sort(l[splitPoint:])
         
         while(len(p1) > 0 and len(p2) > 0):
             if p1[0] > p2[0]:
