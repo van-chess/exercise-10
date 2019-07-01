@@ -71,17 +71,17 @@ class World(threading.Thread):
             a.foodlevel-=1
             self.animals = [a for a in self.animals if a.foodlevel >= 0]# self animals are all mice whose foodlevel is bogger than 0
             print("Animals left: " + str(len(self.animals)))
-            if(len(self.animals)) == 0:
-                print("All mice dead!")
-                quit()
+            #if(len(self.animals)) == 0:
+            #    print("All mice dead!")
+            #   quit()
 
         for a in self.animals:
             print(a.name, ":", a.foodlevel)
-            if a.foodlevel<= 0:
-                print(a.name, " died")
+            #if a.foodlevel<= 0:
+            #    print(a.name, " died")
 
         self.foodAvailable += random.randint(2, 10)
-        print("Added to stack: ", self.foodAvailable)
+        #print("Added to stack: ", self.foodAvailable)
     
     def run(self):
         """The thread runs indefinitely, until someone crashes 
