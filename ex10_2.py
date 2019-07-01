@@ -2,6 +2,12 @@ import random
 import threading
 import time
 
+'''In file ex10-2.py, you find parts of an implementation to simulate a zoo. The zoo itself is represented by the class World 
+and is populated with mice (represented by the class Mouse). Mice basically sleep and eat, but the access to food is restricted. 
+At most two mice can eat at the same time, and the amount of food is limited (but replenished after 12 seconds).
+
+Please implement the method day() in the class Mouse, following its the documentation.'''
+
 class Mouse(threading.Thread):
     def __init__(self, world, name):
         threading.Thread.__init__(self)
@@ -10,6 +16,20 @@ class Mouse(threading.Thread):
         self.foodlevel = 1
     
     def day(self):
+        time.sleep(random.randint(1, 5))# mouse can sleep for u to 5 seconds, otherwise it dies, because it doesn't eat
+        if self.world.foodAvailable:
+            mouse_thread = threading.Thread(target=self.world.food_lock.acquire)
+            mouse_thread.start()
+            mouse_thread.join()
+            if self.world.foodAvailable:
+                self.foodlevel += 1 # add one to food level of mouse
+                self.world.foodAvailable -= 1 # subtract one from the world
+            self.world.food_lock.release()#Increase the counter and return
+            time.sleep(1)
+        else:
+            time.sleep(1)
+
+
         """One day for a mouse passes. In each day, 
         a mouse sleeps for a random amount of time.
         After that, the mouse makes two attempts at eating.
@@ -36,6 +56,8 @@ class World(threading.Thread):
         threading.Thread.__init__(self)
         self.animals = []
         self.foodAvailable = 10
+        max_mice = 2# making sure only two mice attempt to eat food
+        self.food_lock = threading.Semaphore(max_mice)
     
     def addAnimal(self, animal):
         self.animals.append(animal)
@@ -45,8 +67,21 @@ class World(threading.Thread):
         the food reserves are filled by a random integer.
         """
         time.sleep(12)
-        print("Animals: " + str(len(self.animals)))
-        self.foodAvailable += random.randint(0,10)
+        for a in self.animals:
+            a.foodlevel-=1
+            self.animals = [a for a in self.animals if a.foodlevel >= 0]# self animals are all mice whose foodlevel is bogger than 0
+            print("Animals left: " + str(len(self.animals)))
+            if(len(self.animals)) == 0:
+                print("All mice dead!")
+                quit()
+
+        for a in self.animals:
+            print(a.name, ":", a.foodlevel)
+            if a.foodlevel<= 0:
+                print(a.name, " died")
+
+        self.foodAvailable += random.randint(2, 10)
+        print("Added to stack: ", self.foodAvailable)
     
     def run(self):
         """The thread runs indefinitely, until someone crashes 
