@@ -8,8 +8,22 @@ class Mouse(threading.Thread):
         self.name = name
         self.world = world
         self.foodlevel = 1
+
     
     def day(self):
+        time.sleep(random.randint(1, 6))
+        foodstack = threading.Semaphore(2)
+        foodstack.acquire()
+        #with self.Lock:
+            #threading.Timer(6.0, self.world.animals.pop())
+        if self.world.foodAvailable > 0:
+            self.world.foodAvailable -= 1
+            self.foodlevel += 1
+            time.sleep(1)
+        else:
+            time.sleep(1)
+            self.foodlevel -= 1
+        foodstack.release()
         """One day for a mouse passes. In each day, 
         a mouse sleeps for a random amount of time.
         After that, the mouse makes two attempts at eating.
@@ -25,7 +39,7 @@ class Mouse(threading.Thread):
           place immediately.
         - The attempt takes one second, even if unsuccessful.
         """
-        pass
+
     
     def run(self):
         while True:
@@ -45,8 +59,11 @@ class World(threading.Thread):
         the food reserves are filled by a random integer.
         """
         time.sleep(12)
+        for animal in self.animals:
+            if animal.foodlevel <= 0:
+                self.animals.pop()
         print("Animals: " + str(len(self.animals)))
-        self.foodAvailable += random.randint(0,10)
+        self.foodAvailable += random.randint(2, 10)
     
     def run(self):
         """The thread runs indefinitely, until someone crashes 
